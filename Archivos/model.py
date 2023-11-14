@@ -44,7 +44,7 @@ class RobotLimpieza(Agent):
         self.celdas_sucias = 0
 
     # ✓ Función que encuentra las celdas disponibles alrededor de un robot
-    def buscar_celdas_disponibles(self, tipo_agente):
+    def buscar_celdas_disponibles(self, tipo_agente): # robot, tipo de agente a buscar
         # Encuentra los vecinos
         vecinos = self.model.grid.get_neighbors(self.pos, moore = True, include_center = False)
 
@@ -76,7 +76,7 @@ class RobotLimpieza(Agent):
         return celdas_disponibles
 
     # ✓ Función que encuentra una celda sucia y procede a limpiarla
-    def limpiar_una_celda(self, celdas_sucias):
+    def limpiar_una_celda(self, celdas_sucias): # robot, listado de celdas sucias
         # Si no hay celdas sucias
         if len(celdas_sucias) == 0:
             # El robot se queda quieto
@@ -93,7 +93,7 @@ class RobotLimpieza(Agent):
             self.sig_pos = celda_elegida.pos
 
     # ✓ Función que selecciona la nueva posición a avanzar
-    def seleccionar_nueva_pos(self):
+    def seleccionar_nueva_pos(self): # robot
         # Encuentra todas las celdas disponibles
         celdas_disponibles = self.buscar_celdas_disponibles((Celda))
         # Si no hay celdas disponibles
@@ -106,11 +106,11 @@ class RobotLimpieza(Agent):
             self.sig_pos = self.random.choice(celdas_disponibles).pos
 
     # ✓ Función que calcula la distancia entre 2 puntos
-    def distancia_euclidiana(self, punto1, punto2):
-        return math.sqrt(pow(punto1[0] - punto2[0], 2) + pow(punto1[1] - punto2[1], 2))
+    def distancia_euclidiana(self, punto1, punto2): # robot, dos coordenadas a comparar (punto #1 y punto #2)
+        return math.sqrt(pow(punto1[0] - punto2[0], 2) + pow(punto1[1] - punto2[1], 2)) # distancia euclidiana
     
     # ✓ Función que selecciona un cargador y lo establece como objetivo del robot
-    def seleccionar_cargador(self, cargadores):
+    def seleccionar_cargador(self, cargadores): # robot, listado de cargadores
         # Se inicializan variables del cargador más cercano y la distancia mínima
         cargador_mas_cercano = cargadores[0]
         distancia_minima = float("infinity")
@@ -130,7 +130,7 @@ class RobotLimpieza(Agent):
         self.objetivo = cargador_mas_cercano
 
     # ✓ Función que mueve un robot a una posición específica
-    def viajar_a_objetivo(self):  
+    def viajar_a_objetivo(self): # robot
         # Si tiene como objetivo ir a un cargador    
         if self.objetivo in self.model.pos_cargadores:
             # Busca las celdas en donde están los cargadores
@@ -159,7 +159,7 @@ class RobotLimpieza(Agent):
                     celda.sucia = False
     
     # ✓ Función que carga la batería de un robot
-    def cargar_robot(self):
+    def cargar_robot(self): # robot
         # Si la carga del robot es menor a 100
         if self.carga < 100:
             # Se aumenta la carga en 25
@@ -174,7 +174,7 @@ class RobotLimpieza(Agent):
                 self.model.cantidad_recargas += 1
 
     # ✓ Función para verificar si un robot puede ayudar a resolver un problema
-    def pedir_ayuda(self, pos):
+    def pedir_ayuda(self, pos): # robot, posición de ayuda
         # Si el robot está buscando un cargador o tiene basura a su alrededor 
         if self.celdas_sucias > 0 or self.objetivo:
             # No se procesa la solicitud
@@ -187,7 +187,7 @@ class RobotLimpieza(Agent):
     
     # ✓ Función para encontrar todos las celdas vecinas que están sucias
     @staticmethod
-    def buscar_celdas_sucias(lista_de_vecinos):
+    def buscar_celdas_sucias(lista_de_vecinos): # listado de vecinos
         # Se inicializa una lista de celdas sucias
         celdas_sucias = list()
 
@@ -202,7 +202,7 @@ class RobotLimpieza(Agent):
         return celdas_sucias
 
     # ✓ Función encargada de ejecutar un paso en la simulación 
-    def step(self):
+    def step(self): # robot
         # El robot llegó a su objetivo
         if self.pos == self.objetivo:
             # Se desmarca el objetivo
@@ -245,7 +245,7 @@ class RobotLimpieza(Agent):
         self.advance()
 
     # ✓ Función encargada para avanzar al robot en la simulación
-    def advance(self):
+    def advance(self): # robot
         # Si el robot no se quedó quieto
         if self.pos != self.sig_pos and self.carga > 0:
             # Aumenta el número de movimientos en el robot y para el análisis de datos
@@ -342,7 +342,7 @@ class Habitacion(Model):
                             })
 
     # ✓ Función encargada de ejecutar un paso en la simulación 
-    def step(self):
+    def step(self): # habitación
         # Recolecta la información de las gráficas
         self.datacollector.collect(self)
         
@@ -373,11 +373,11 @@ class Habitacion(Model):
             self.running = False
 
     # ✓ Función que calcula la distancia entre 2 puntos
-    def distancia_euclidiana(self, punto1, punto2):
+    def distancia_euclidiana(self, punto1, punto2): # habitación, dos coordenadas a comparar (punto #1 y punto #2)
         return math.sqrt(pow(punto1[0] - punto2[0], 2) + pow(punto1[1] - punto2[1], 2))
 
     # ✓ Función que verifica que todo el salón esté limpio
-    def salon_limpio(self):
+    def salon_limpio(self): # habitación
         for (content, pos) in self.grid.coord_iter():
             for celda in content:
                 if isinstance(celda, Celda) and celda.sucia:
@@ -385,7 +385,7 @@ class Habitacion(Model):
         return True
     
     # ✓ Función que obtiene la posición actual de las celdas sucias
-    def get_celdas_sucias(self):
+    def get_celdas_sucias(self): # habitación
         celdas_sucias = list()
         for(content, pos) in self.grid.coord_iter():
             for celda in content:
@@ -394,7 +394,7 @@ class Habitacion(Model):
         return celdas_sucias
     
     # ✓ Función que obtiene la posición actual de los robots
-    def get_robots(self):
+    def get_robots(self): # habitación
         robots = list()
         for (content, pos) in self.grid.coord_iter():
             for celda in content:
@@ -403,11 +403,11 @@ class Habitacion(Model):
         return robots
     
     # ✓ Función para añadir problemas a la lista de estos
-    def pedir_ayuda_aux(self, pos, num_sucias):
+    def pedir_ayuda_aux(self, pos, num_sucias): # habitación, posición de ayuda y número de celdas sucias
         self.problemas.append((num_sucias, pos))
 
     # ✓ Función que notifica que existe mucha basura en un área a todos los robots
-    def notificar_problema(self):
+    def notificar_problema(self): # habitación
         # Organiza los problemas por gravedad (cantidad de celdas sucias) de mayor a menor
         self.problemas = sorted(self.problemas, key = lambda problema: problema[0], reverse = True)
         # Obtiene la posición de todos los robots
